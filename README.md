@@ -5,7 +5,7 @@ In this project you are given a web-based application that reads RSS feeds. The 
 
 ## How to run this project?
 
-You could simply clone or download this repository and run the "index.html" file or go to the following web address [danielmmelo.com/p6/](http://danielmmelo.com/p6/)
+You could simply clone or download this repository and run the "index.html" file or go to the following web address [http://mayankkhanna.me/frontend-nanodegree-feedreader/](http://mayankkhanna.me/frontend-nanodegree-feedreader/)
 
 ## Stuff I used as reference for building this:
 
@@ -13,3 +13,4 @@ You could simply clone or download this repository and run the "index.html" file
 * Course material
 * Jasmine Documentation
 * jQuery Documentation
+* Udacity Frontend Nanodegree II
