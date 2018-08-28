@@ -8,12 +8,15 @@
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
-$(function() {
+
+$(function () {
     /* This is our first test suite - a test suite just contains
-    * a related set of tests. This suite is all about the RSS
-    * feeds definitions, the allFeeds variable in our application.
-    */
-    describe('RSS Feeds', function() {
+     * a related set of tests. This suite is all about the RSS
+     * feeds definitions, the allFeeds variable in our application.
+     */
+
+    describe('RSS Feeds', function () {
+
         /* This is our first test - it tests to make sure that the
          * allFeeds variable has been defined and that it is not
          * empty. Experiment with this before you get started on
@@ -21,52 +24,120 @@ $(function() {
          * allFeeds in app.js to be an empty array and refresh the
          * page?
          */
-        it('are defined', function() {
+
+        it('are defined', function () {
             expect(allFeeds).toBeDefined();
             expect(allFeeds.length).not.toBe(0);
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
+        /* In this test I loop through each feed checking the 'url' value is defined
+         * and if its length is not less then 9 just like the test that we do to check
+         * if the RSS feeds are defined, but looping through each feed and looking for
+         * the url value and checking if the length and content is valid.
+         */
+        function checkforValidURLs(feed) {
+        it('feed have valid URL', function () {
+                expect(feed.url).toBeDefined();
+                expect(feed.url.length).not.toBeLessThan(9); // Checks if at least it has something more than the http:// text is there
+                expect(feed.url).toMatch(/^http(s?)\:\/\//); // Regular expression to check if the URL contains https or http meaning that is valid
+        });
+        }
+        // Here I check each URL with the function checkforValidURLs, so we can know which feed has invalid URL
+        for (i = 0; i < allFeeds.length; i++) {
+            checkforValidURLs(allFeeds[i]);
+        }
+        /* This test is very similar to the previous one that checks if the urls are valid, but just check if the
+         * names are defined, then this is far simpler because we only check if the name is a string.
          */
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
+        it('has valid names', function () {
+            for (var i = 0; i < allFeeds.length; i++) {
+                expect(allFeeds[i].name).toBeDefined();
+                expect(allFeeds[i].name.length).not.toBe(0);
+                expect(typeof allFeeds[i].name).toBe('string');
+            }
+        });
     });
 
+    /* This is our second test suite - a test suite just contains
+     * a related set of tests. This suite is all about the Menu
+     * behaviour.
+     */
 
-    /* TODO: Write a new test suite named "The menu" */
+    describe('The menu', function () {
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
+        /* This test checks if the menu is hidden by checking if
+         * the body element has the 'menu-hidden' class using jQuery .hasClass() function
          */
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
+        it('should be hidden by default', function () {
+            expect($("body").hasClass('menu-hidden')).toBe(true);
+        });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
+        /* This test checks if the class is added to the body element on click, assuring
+         * that the state of the menu changes when a click happens
          */
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+        it('should change the visibility when menu icon is clicked', function () {
 
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
+            $(".menu-icon-link").trigger('click'); // When the menu icon is clicked we expect that the 'menu-hidden' class was removed
+            expect($("body").hasClass('menu-hidden')).toBe(false);
+
+            $(".menu-icon-link").trigger('click'); // When the menu icon is clicked again we expect that the 'menu-hidden' class is applied
+            expect($("body").hasClass('menu-hidden')).toBe(true);
+        });
+    });
+    /* This is the third test suite - a test suite just contains
+     * a related set of tests. This suite is all about the Initial Entities.
+     */
+    describe('Initial Entities', function () {
+
+        // As the test is async we use Jasmine's beforeEach and done() funcitons with
+        // loadFeed
+
+        beforeEach(function (done) {
+            loadFeed(0, done);
+        });
+
+        // This is the test that checks if there is at least a single .entry element
+        // within the .feed container
+
+        it('there is at least a single .entry element within the .feed container', function () {
+            expect($('.feed .entry').length).toBeGreaterThan(0);
+        });
+    });
+    /* This is the fourth test suite - a test suite just contains
+     * a related set of tests. This suite is all about the Selection of a New Feed.
+     */
+    describe('New Feed Selection', function () {
+
+        /* In this test we check if the content is updated when
+         * a differnt feedId is passed to the loadFeed() function.
          */
+
+        var defaultContent,
+            updatedContent;
+
+        /* The code bellow runs the loadFeed function with the feedId 0 (default) and 1 (second on the list)
+         * and with a callback that is filling the variables with the content we get.
+         */
+
+        beforeEach(function (done) {
+            loadFeed(0, function () {
+                defaultContent = $('.feed').text();
+
+                loadFeed(1, function () {
+                    updatedContent = $('.feed').text();
+                    done();
+                });
+            });
+
+        });
+
+        // This test checks if the variables are different if that happend it means the content changed
+
+        it('loads a new feed', function () {
+            expect(updatedContent).not.toBe(defaultContent);
+        });
+    });
 }());
