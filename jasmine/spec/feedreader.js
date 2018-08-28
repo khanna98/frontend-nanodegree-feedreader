@@ -30,13 +30,13 @@ $(function () {
             expect(allFeeds.length).not.toBe(0);
         });
 
-        /* In this test I loop through each feed checking the 'url' value is defined
-         * and if its length is not less then 9 just like the test that we do to check
+        /* This test loops through each feed checking if its 'url' value is defined or not
+         * and if its length is not less than 9 just like the test that we do to check
          * if the RSS feeds are defined, but looping through each feed and looking for
          * the url value and checking if the length and content is valid.
          */
-        function checkforValidURLs(feed) {
-        it('feed have valid URL', function () {
+        function checkValidUrls(feed) {
+        it('URL in feed are valid', function () {
                 expect(feed.url).toBeDefined();
                 expect(feed.url.length).not.toBeLessThan(9); // Checks if at least it has something more than the http:// text is there
                 expect(feed.url).toMatch(/^http(s?)\:\/\//); // Regular expression to check if the URL contains https or http meaning that is valid
@@ -44,13 +44,13 @@ $(function () {
         }
         // Here I check each URL with the function checkforValidURLs, so we can know which feed has invalid URL
         for (i = 0; i < allFeeds.length; i++) {
-            checkforValidURLs(allFeeds[i]);
+            checkValidUrls(allFeeds[i]);
         }
         /* This test is very similar to the previous one that checks if the urls are valid, but just check if the
          * names are defined, then this is far simpler because we only check if the name is a string.
          */
 
-        it('has valid names', function () {
+        it('names are valid', function () {
             for (var i = 0; i < allFeeds.length; i++) {
                 expect(allFeeds[i].name).toBeDefined();
                 expect(allFeeds[i].name.length).not.toBe(0);
